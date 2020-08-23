@@ -16,7 +16,7 @@ Deploying Working ElasticSearch Instance
 
 ```2. Navigate to infra_creation directory and execute the trigger.py script.```
 
-```3. On successfull execution of the script suite, Login to elasticsearch node (ssh -i mykeypair.pem ubuntu@<ES node IP>) and try to execute few curl commands, which demonstrates the access to ElasticSearch service. Username is elastic and password is admin123.```
+```3. On successfull execution of the script suite, Login to elasticsearch node (ssh -i mykeypair.pem ubuntu@<ES node IP>) and try to execute few curl commands, which demonstrates the access to ElasticSearch service. Username is **elastic** and password is **admin123**.```
 
   - curl -u "elastic:admin123" --insecure -X GET "https://localhost:9200/_xpack?pretty" # API call to confirm access to elasticsearch over https.
   - curl -u "elastic:admin123" --insecure -X PUT "https://localhost:9200/test-index?pretty" # API call for creating a test index.
