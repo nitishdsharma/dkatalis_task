@@ -24,7 +24,7 @@ Deploying Working ElasticSearch Instance
   - curl -u "elastic:admin123" --insecure -X PUT "https://localhost:9200/test-index?pretty" # API call for creating a test index.
   - curl -u "elastic:admin123" --insecure -X GET "https://localhost:9200/_cat/indices/test-index?v&s=index&pretty" # Listing the created index.
   - curl -u "elastic:admin123" --insecure -X GET "https://localhost:9200/_cat/health" # Check health of the service.
-``
+```
 ```4. Execute **terraform destroy** command from infra_creation directory.```
 
 ### Sample Output:
