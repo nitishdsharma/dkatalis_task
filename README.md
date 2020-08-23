@@ -1,11 +1,15 @@
 # dkatalis_task
 Deploying Working ElasticSearch Instance
 
+## Inclusions
+1. **infra_creation** directory which contains python and terraform configuration scripts for spinning up an ec2 instance.
+2. **configuration** directory which contains ansible yamls to install and configure the Elasticsearch node.
+
 ## Prequisites:
 1. Python on Bastion host.
 2. Configured aws cli.
 
-### Note: Have used t2.xlarge ec2 instance type.
+### Note: Have used t2.xlarge ec2 instance type. The Service is accessible on the localhost itself.
 
 ## Steps
 ```1. Clone the git repo.```
@@ -19,7 +23,6 @@ Deploying Working ElasticSearch Instance
   - curl -u "elastic:admin123" --insecure -X GET "https://localhost:9200/_cat/indices/test-index?v&s=index&pretty" # Listing the created index.
   - curl -u "elastic:admin123" --insecure -X GET "https://localhost:9200/_cat/health" # Check health of the service.
 ``
-
 
 ### Sample Output:
 
