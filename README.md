@@ -9,12 +9,14 @@ Deploying Working ElasticSearch Instance
 1. Python on Bastion host.
 2. Configured aws cli.
 
-### Note: Have used t2.xlarge ec2 instance type. The Service is accessible on the localhost itself.
+### Note: 
+1. Have used t2.xlarge ec2 instance type. The Service is accessible on the localhost itself.
+2. Error handling pieces in code are missing.
 
 ## Steps
 ```1. Clone the git repo.```
 
-```2. Navigate to infra_creation directory and execute the trigger.py script.```
+```2. Navigate to infra_creation directory, make the **trigger.py** script **executable** and execute the script.```
 
 ```3. On successfull execution of the script suite, Login to elasticsearch node (ssh -i mykeypair.pem ubuntu@<ES node IP>) and try to execute few curl commands, which demonstrates the access to ElasticSearch service. Username is **elastic** and password is **admin123**.```
 
