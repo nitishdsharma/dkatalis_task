@@ -23,7 +23,7 @@ Deploying Working ElasticSearch Instance
 
 ### Sample Output:
 
-### ```ubuntu@ip-10-0-1-10:~$ curl -u "elastic:admin123" --insecure -X PUT "https://localhost:9200/test-index?pretty"```
+#### ```ubuntu@ip-10-0-1-10:~$ curl -u "elastic:admin123" --insecure -X PUT "https://localhost:9200/test-index?pretty"```
 
 {
   "acknowledged" : true,
