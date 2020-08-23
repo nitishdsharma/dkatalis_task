@@ -44,7 +44,7 @@ Ans. I have used Python script to create a aws keypair, so that we get a downloa
 2. How did you choose to secure ElasticSearch? Why?
 
 Ans. There are two ways which I have followed.
-- Only opening the ssh and 9200 port to access the elasticsearch node.
+- Just Opened the ssh and 9200 port to access the elasticsearch node.
 - Provisioned an openssl certificate for elasticsearch configuration. Access to elasticsearch service is tied with username/password.
 
 3. How would you monitor this instance? What metrics would you monitor?
