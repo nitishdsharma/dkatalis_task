@@ -1,0 +1,102 @@
+---
+- name: Add Elasticsearch apt key.
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  become: yes
+
+- name: Add Elasticsearch repository.
+  apt_repository:
+    repo: 'deb https://artifacts.elastic.co/packages/{{ elasticsearch_version }}/apt stable main'
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Add Elasticsearch apt key.
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  become: yes
+
+- name: Ensure dependency is installed (Ubuntu).
+  apt: name=apt-transport-https state=present
+  become: yes
+
+- name: Download Elasticsearch deb and dependencies
+  shell: sudo sysctl -w vm.max_map_count=262144 &&  sudo apt-get update && sudo apt-get install unzip && wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-amd64.deb
+  become: yes
+
+- name: Update APT package manager repositories cache
+  become: true
+  apt:
+    update_cache: yes
+
+- name: Install OpenJDK Java
+  become: yes
+  apt:
+   name: "{{ item }}"
+   state: present
+  with_items:
+   openjdk-8-jdk
+
+- name: Download/Install other dependencies
+  shell: wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-amd64.deb.sha512 && shasum -a 512 -c elasticsearch-7.9.0-amd64.deb.sha512 && sudo dpkg -i elasticsearch-7.9.0-amd64.deb
+
+- name: setting memory values
+  shell: sudo sed -i 's/Xms1g/Xms10g/' /etc/elasticsearch/jvm.options && sudo sed -i 's/Xmx1g/Xmx10g/' /etc/elasticsearch/jvm.options
+  become: yes
+
+- name: Configuring the limits
+  local_action: shell echo "* hard nofile 65536" >> limits.conf && echo "session required pam_limits.so" >> login && echo "fs.file-max=250000" >> sysctl.conf
+
+- name: Copying the file to remote machine
+  copy:
+    src: limits.conf
+    dest: /etc/security/limits.conf
+    mode: '0644'
+  become: yes
+
+- name: Copying the file to remote machine
+  copy:
+    src: login
+    dest: /etc/pam.d/login
+    mode: '0644'
+  become: yes
+
+
+- name: Copying the file to remote machine
+  copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.conf
+    mode: '0644'
+  become: yes
+
+- name: starting the elasticsearch service
+  shell: sudo update-rc.d elasticsearch defaults 95 10 && sudo service elasticsearch start
+
+
+- name: Create ca cert on the elasticsearch node.
+  shell: echo | sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca --pem
+  run_once: true
+
+
+- name: Create self signed certificate
+  shell: sudo mkdir -p /etc/elasticsearch/certs && sudo unzip /usr/share/elasticsearch/elastic-stack-ca.zip && echo | sudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca-cert /home/ubuntu/ca/ca.crt --ca-key /home/ubuntu/ca/ca.key --dns `hostname` --ip `ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | awk '{print $1}'` --pem && yes | sudo unzip /usr/share/elasticsearch/certificate-bundle.zip && sudo cp -r /home/ubuntu/instance /etc/elasticsearch/certs/. && sudo cp -r /home/ubuntu/ca /etc/elasticsearch/certs/.
+  become: yes
+
+- name: configuring the elasticsearch.yml file
+  copy:
+    src: config.txt
+    dest: /etc/elasticsearch/elasticsearch.yml
+  become: yes
+
+- name: Restart elasticsearch.service
+  shell: sudo service elasticsearch restart
+
+- name: Enable trial license
+  shell: curl -u "elastic:{{ builtin_password }}" --insecure -f -X POST "https://localhost:9200/_xpack/license/start_trial?acknowledge=true"
+  ignore_errors: yes
+  become: yes
+
+- name: Removing the extra files
+  local_action: shell yes | rm inventory limits.conf login sysctl.conf
