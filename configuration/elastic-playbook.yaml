@@ -7,13 +7,13 @@
 
   vars:
     elasticsearch_version: '7.x'
-    elasticsearch_package_state: 'present'
-    elasticsearch_service_enabled: true
-    elasticsearch_http_port: 9200
+    #elasticsearch_package_state: 'present'
+    #elasticsearch_service_enabled: true
+    #elasticsearch_http_port: 9200
     builtin_password: 'admin123'
 
   tasks:
     - set_fact:
         system_os: "{{ hostvars[inventory_hostname].ansible_distribution }}"
-    - include_tasks: "install_es.yml"
+    - include_tasks: "install_es.yaml"
       when: system_os == 'Ubuntu'
